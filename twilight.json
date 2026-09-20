@@ -1,10 +1,10 @@
 {
-    "name": {
-        "ar": "رائد",
-        "en": "Theme Raed"
-    },
-    "repository": "https://github.com/SallaApp/theme-raed",
-    "author_email": "support@salla.sa",
+  "name": {
+    "ar": "مهند",
+    "en": "Mhnd"
+  },
+  "repository": "https://github.com/bigmhnd511-pixel/theme-mhnd",
+  "author_email": "khryanapple@gmail.com",
     "features": [
         "mega-menu",
         "fonts",
