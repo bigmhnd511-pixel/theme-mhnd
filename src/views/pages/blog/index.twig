@@ -3,9 +3,8 @@
 #}
 {% extends "layouts.master" %}
 
-{% set is_ar = language.code == 'ar' %}
-
 {% block content %}
+{% set is_ar = language.code == 'ar' %}
 <div class="blog-seo-page">
   <nav class="breadcrumbs w-full">
     <salla-breadcrumb></salla-breadcrumb>
@@ -56,7 +55,7 @@
             {% endif %}
 
             <div class="blog-card-meta">
-              <time datetime="{{ article.created_at|date('c') }}">{{ article.created_at|date }}</time>
+              <time>{{ article.created_at|date }}</time>
 
               {% if article.author.url and article.author.name %}
                 <a href="{{ article.author.url }}">{{ article.author.name }}</a>
@@ -88,7 +87,7 @@
             {% endif %}
 
             <div class="blog-card-meta">
-              <time datetime="{{ article.created_at|date('c') }}">{{ article.created_at|date }}</time>
+              <time>{{ article.created_at|date }}</time>
 
               {% if article.author.url and article.author.name %}
                 <a href="{{ article.author.url }}">{{ article.author.name }}</a>
