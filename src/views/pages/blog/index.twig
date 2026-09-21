@@ -13,12 +13,6 @@
 
   <header class="blog-seo-intro">
     <h1>{{ page.title }}</h1>
-    <p>
-      {{ is_ar
-        ? 'شروحات وتجارب تقنية عملية حول الايفون وتحديثات iOS والشحن والملحقات، بخطوات واضحة ومعلومات محدثة تساعدك على حل المشكلة واختيار المنتج المناسب.'
-        : 'Practical technology guides about iPhone, iOS updates, charging and accessories, with clear steps and up-to-date information.'
-      }}
-    </p>
   </header>
 
   {% if categories|length %}
@@ -62,7 +56,7 @@
             {% endif %}
 
             <div class="blog-card-meta">
-              <time>{{ article.created_at|date }}</time>
+              <time datetime="{{ article.created_at|date('c') }}">{{ article.created_at|date }}</time>
 
               {% if article.author.url and article.author.name %}
                 <a href="{{ article.author.url }}">{{ article.author.name }}</a>
@@ -82,11 +76,7 @@
 
       {% hook 'blog:index.items.start' %}
 
-      <salla-infinite-scroll
-        class="blog-seo-feed"
-        next-page="{{ articles.next_page }}"
-        autoload
-      >
+      <div class="blog-seo-feed">
         {% for article in articles %}
           <article data-testid="store-blog-article-card" class="blog-seo-card">
             <h3 class="blog-seo-card__title">
@@ -98,7 +88,7 @@
             {% endif %}
 
             <div class="blog-card-meta">
-              <time>{{ article.created_at|date }}</time>
+              <time datetime="{{ article.created_at|date('c') }}">{{ article.created_at|date }}</time>
 
               {% if article.author.url and article.author.name %}
                 <a href="{{ article.author.url }}">{{ article.author.name }}</a>
@@ -133,7 +123,7 @@
             {% endif %}
           </article>
         {% endfor %}
-      </salla-infinite-scroll>
+      </div>
 
       {% if articles.next_page %}
         <nav
@@ -141,7 +131,7 @@
           aria-label="{{ is_ar ? 'صفحات المدونة' : 'Blog pages' }}"
         >
           <a href="{{ articles.next_page }}" rel="next">
-            {{ is_ar ? 'المزيد من المقالات' : 'More articles' }}
+            {{ is_ar ? 'الصفحة التالية' : 'Next page' }}
           </a>
         </nav>
       {% endif %}
