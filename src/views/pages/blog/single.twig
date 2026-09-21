@@ -17,7 +17,7 @@
         <h1>{{ article.title }}</h1>
 
         <div class="blog-article-meta">
-          <time>{{ article.created_at|date }}</time>
+          <time datetime="{{ article.created_at|date('c') }}">{{ article.created_at|date }}</time>
 
           {% if article.author.url and article.author.name %}
             <a href="{{ article.author.url }}">{{ article.author.name }}</a>
@@ -93,7 +93,7 @@
 
         {% for item in related %}
           <article class="blog-related-item">
-            <time>{{ item.created_at|date }}</time>
+            <time datetime="{{ item.created_at|date('c') }}">{{ item.created_at|date }}</time>
             <a href="{{ item.url }}">{{ item.title }}</a>
           </article>
         {% endfor %}
