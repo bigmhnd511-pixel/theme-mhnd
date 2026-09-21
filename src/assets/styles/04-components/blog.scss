@@ -22,14 +22,6 @@
   font-weight:800;
 }
 
-.blog-seo-intro p {
-  max-width:820px;
-  margin:12px auto 0;
-  color:#5F6862;
-  font-size:15px;
-  line-height:1.9;
-}
-
 .blog-seo-section-title {
   margin:0 0 14px;
   color:#254E45;
@@ -211,23 +203,6 @@
 .blog-card-tags a:hover,
 .blog-article-tags a:hover {
   color:#4D3514;
-}
-
-/* Keep Salla's native infinite-scroll UI styled if it is injected as a sibling. */
-salla-infinite-scroll.blog-seo-feed + .s-infinite-scroll-btn,
-.blog-seo-feed .s-infinite-scroll-btn {
-  width:auto !important;
-  min-width:180px;
-  min-height:42px;
-  margin:24px auto 0 !important;
-  padding:9px 24px !important;
-  border:1px solid rgba(104,122,77,.22) !important;
-  border-radius:10px !important;
-  background:#EEF6F0 !important;
-  color:#274D41 !important;
-  font-size:12px !important;
-  font-weight:800 !important;
-  box-shadow:none !important;
 }
 
 .blog-crawl-pagination {
