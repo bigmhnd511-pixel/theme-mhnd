@@ -3,6 +3,8 @@
 #}
 {% extends "layouts.master" %}
 
+{% set is_ar = language.code == 'ar' %}
+
 {% block content %}
 <div class="blog-seo-page">
   <nav class="breadcrumbs w-full">
@@ -12,19 +14,28 @@
   <header class="blog-seo-intro">
     <h1>{{ page.title }}</h1>
     <p>
-      شروحات وتجارب تقنية عملية حول الايفون وتحديثات iOS والشحن والملحقات،
-      بخطوات واضحة ومعلومات محدثة تساعدك على حل المشكلة واختيار المنتج المناسب.
+      {{ is_ar
+        ? 'شروحات وتجارب تقنية عملية حول الايفون وتحديثات iOS والشحن والملحقات، بخطوات واضحة ومعلومات محدثة تساعدك على حل المشكلة واختيار المنتج المناسب.'
+        : 'Practical technology guides about iPhone, iOS updates, charging and accessories, with clear steps and up-to-date information.'
+      }}
     </p>
   </header>
 
   {% if categories|length %}
     <section aria-labelledby="blog-topics-title">
-      <h2 id="blog-topics-title" class="blog-seo-section-title">تصفح حسب الموضوع</h2>
-      <nav class="blog-seo-topics" aria-label="تصنيفات المدونة">
+      <h2 id="blog-topics-title" class="blog-seo-section-title">
+        {{ trans('pages.blog_categories.categories') }}
+      </h2>
+      <nav
+        data-testid="store-blog-categories"
+        class="blog-seo-topics"
+        aria-label="{{ trans('pages.blog_categories.categories') }}"
+      >
         {% for category in categories %}
           <a
             class="blog-seo-topic{{ category.is_current ? ' is-active' : '' }}"
             href="{{ category.url }}"
+            {% if category.is_current %}aria-current="page"{% endif %}
           >
             {{ category.name }}
           </a>
@@ -33,9 +44,41 @@
     </section>
   {% endif %}
 
+  {% if slides|length %}
+    <section class="blog-featured" aria-labelledby="featured-articles-title">
+      <h2 id="featured-articles-title" class="blog-seo-section-title">
+        {{ is_ar ? 'مقالات مميزة' : 'Featured articles' }}
+      </h2>
+
+      <div class="blog-featured-list">
+        {% for article in slides %}
+          <article class="blog-featured-card">
+            <h3>
+              <a href="{{ article.url }}">{{ article.title }}</a>
+            </h3>
+
+            {% if article.summary %}
+              <p>{{ article.summary }}</p>
+            {% endif %}
+
+            <div class="blog-card-meta">
+              <time>{{ article.created_at|date }}</time>
+
+              {% if article.author.url and article.author.name %}
+                <a href="{{ article.author.url }}">{{ article.author.name }}</a>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
   {% if articles|length %}
     <section aria-labelledby="latest-guides-title">
-      <h2 id="latest-guides-title" class="blog-seo-section-title">أحدث الأدلة والشروحات</h2>
+      <h2 id="latest-guides-title" class="blog-seo-section-title">
+        {{ is_ar ? 'أحدث الأدلة والشروحات' : 'Latest guides and articles' }}
+      </h2>
 
       {% hook 'blog:index.items.start' %}
 
@@ -46,14 +89,66 @@
       >
         {% for article in articles %}
           <article data-testid="store-blog-article-card" class="blog-seo-card">
-            <a href="{{ article.url }}">{{ article.title }}</a>
+            <h3 class="blog-seo-card__title">
+              <a href="{{ article.url }}">{{ article.title }}</a>
+            </h3>
+
+            {% if article.summary %}
+              <p class="blog-seo-card__summary">{{ article.summary }}</p>
+            {% endif %}
+
+            <div class="blog-card-meta">
+              <time>{{ article.created_at|date }}</time>
+
+              {% if article.author.url and article.author.name %}
+                <a href="{{ article.author.url }}">{{ article.author.name }}</a>
+              {% endif %}
+
+              {% if store.settings.blog.allow_likes_and_comments %}
+                {% if article.likes_count %}
+                  <span aria-label="{{ is_ar ? 'الإعجابات' : 'Likes' }}">
+                    <i class="sicon-thumbs-up" aria-hidden="true"></i>
+                    {{ article.likes_count }}
+                  </span>
+                {% endif %}
+
+                {% if article.comments_count %}
+                  <span aria-label="{{ is_ar ? 'التعليقات' : 'Comments' }}">
+                    <i class="sicon-chat" aria-hidden="true"></i>
+                    {{ article.comments_count }}
+                  </span>
+                {% endif %}
+              {% endif %}
+            </div>
+
+            {% if article.tags|length %}
+              <nav
+                class="blog-card-tags"
+                aria-label="{{ is_ar ? 'وسوم المقال' : 'Article tags' }}"
+              >
+                {% for tag in article.tags %}
+                  <a href="{{ tag.url }}">{{ tag.name }}</a>
+                {% endfor %}
+              </nav>
+            {% endif %}
           </article>
         {% endfor %}
       </salla-infinite-scroll>
 
+      {% if articles.next_page %}
+        <nav
+          class="blog-crawl-pagination"
+          aria-label="{{ is_ar ? 'صفحات المدونة' : 'Blog pages' }}"
+        >
+          <a href="{{ articles.next_page }}" rel="next">
+            {{ is_ar ? 'المزيد من المقالات' : 'More articles' }}
+          </a>
+        </nav>
+      {% endif %}
+
       {% hook 'blog:index.items.end' %}
     </section>
-  {% else %}
+  {% elseif not slides|length %}
     <div class="no-content-placeholder">
       <i class="sicon-inbox icon"></i>
       <p>{{ trans('pages.blog_categories.no_articles') }}</p>
