@@ -3,6 +3,8 @@
 #}
 {% extends "layouts.master" %}
 
+{% set is_ar = language.code == 'ar' %}
+
 {% block content %}
 <div class="blog-article-page">
   <nav class="breadcrumbs w-full py-5">
@@ -11,22 +13,65 @@
 
   <div class="blog-article-layout">
     <article class="blog-article">
-      <header>
+      <header class="blog-article-header">
         <h1>{{ article.title }}</h1>
+
+        <div class="blog-article-meta">
+          <time>{{ article.created_at|date }}</time>
+
+          {% if article.author.url and article.author.name %}
+            <a href="{{ article.author.url }}">{{ article.author.name }}</a>
+          {% endif %}
+        </div>
       </header>
 
       {% if article.has_image %}
         <img
           class="blog-article-cover"
           src="{{ article.image.url }}"
-          alt="{{ article.image.alt }}"
-          title="{{ article.image.alt }}"
+          alt="{{ article.image.alt ?: article.title }}"
+          title="{{ article.image.alt ?: article.title }}"
+          loading="eager"
+          fetchpriority="high"
         />
+      {% endif %}
+
+      {% if store.settings.blog.allow_likes_and_comments %}
+        <div class="blog-article-engagement">
+          <button
+            id="blog-like"
+            data-blog-id="{{ article.key }}"
+            class="blog-like-button"
+            type="button"
+            aria-label="{{ is_ar ? 'الإعجاب بالمقال' : 'Like article' }}"
+          >
+            <i class="sicon-thumbs-up text-primary" aria-hidden="true"></i>
+            <span>{{ article.likes_count }}</span>
+          </button>
+
+          {% if article.comments_count %}
+            <span class="blog-comments-count">
+              <i class="sicon-chat text-primary" aria-hidden="true"></i>
+              {{ article.comments_count }}
+            </span>
+          {% endif %}
+        </div>
       {% endif %}
 
       <div class="blog-article-body">
         {{ article.body|replace({'&nbsp;': ' '})|raw }}
       </div>
+
+      {% if article.tags|length %}
+        <nav
+          class="blog-article-tags"
+          aria-label="{{ is_ar ? 'وسوم المقال' : 'Article tags' }}"
+        >
+          {% for tag in article.tags %}
+            <a href="{{ tag.url }}">{{ tag.name }}</a>
+          {% endfor %}
+        </nav>
+      {% endif %}
 
       {% if store.settings.blog.allow_likes_and_comments %}
         <salla-comments
@@ -38,7 +83,10 @@
     </article>
 
     {% if related|length %}
-      <aside class="blog-related" aria-label="مقالات ذات صلة">
+      <aside
+        class="blog-related"
+        aria-label="{{ is_ar ? 'مقالات ذات صلة' : 'Related articles' }}"
+      >
         <h2>{{ trans('pages.blog_articles.related') }}</h2>
 
         {% hook 'blog:single.items.start' %}
